@@ -1,16 +1,22 @@
-## Hi there 👋
+![Header](./banner.svg)
 
-<!--
-**shahram444/shahram444** is a ✨ _special_ ✨ repository because its `README.md` (this file) appears on your GitHub profile.
+## Hi, I'm Shahram! 👋
 
-Here are some ideas to get you started:
+🔬 **PhD Student** at University of Georgia  
+🧪 Pore-scale reactive transport modeling  
+🦠 Microbial processes in porous media  
+💻 Python & C++ | Open science enthusiast
 
-- 🔭 I’m currently working on ...
-- 🌱 I’m currently learning ...
-- 👯 I’m looking to collaborate on ...
-- 🤔 I’m looking for help with ...
-- 💬 Ask me about ...
-- 📫 How to reach me: ...
-- 😄 Pronouns: ...
-- ⚡ Fun fact: ...
--->
+---
+
+### 🛠️ Tech Stack
+![Python](https://img.shields.io/badge/Python-3776AB?style=flat&logo=python&logoColor=white)
+![C++](https://img.shields.io/badge/C++-00599C?style=flat&logo=c%2B%2B&logoColor=white)
+![LaTeX](https://img.shields.io/badge/LaTeX-008080?style=flat&logo=latex&logoColor=white)
+
+### 📊 GitHub Stats
+![GitHub Stats](https://github-readme-stats.vercel.app/api?username=shahram444&show_icons=true&theme=tokyonight&hide_border=true)
+
+### 📫 Connect
+[![Portfolio](https://img.shields.io/badge/Portfolio-Website-blue)](https://shahram444.github.io/portfolio-)
+[![Google Scholar](https://img.shields.io/badge/Google-Scholar-green)](YOUR_SCHOLAR_LINK)
