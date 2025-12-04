@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scientific Pore-Scale Banner</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Source+Code+Pro:wght@300;400&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #0a0a0a;
+            padding: 40px;
+        }
+        
+        .banner {
+            width: 1280px;
+            height: 400px;
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            background: linear-gradient(135deg, #0c1929 0%, #0d2137 30%, #0a1628 70%, #050d14 100%);
+        }
+        
+        /* Realistic packed grains - hexagonal-ish packing */
+        .grain {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(ellipse at 35% 30%, #243b53, #152238 60%, #0d1a2a);
+            box-shadow: 
+                inset -8px -8px 25px rgba(0,0,0,0.6),
+                inset 4px 4px 15px rgba(80, 140, 200, 0.08),
+                2px 2px 10px rgba(0,0,0,0.4);
+        }
+        
+        /* Pore throat flow - curved streamlines */
+        .streamline {
+            position: absolute;
+            fill: none;
+            stroke: url(#flowGradient);
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            opacity: 0.7;
+            filter: drop-shadow(0 0 4px rgba(0, 255, 136, 0.5));
+        }
+        
+        /* Animated particles following streamlines */
+        .particle {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #00ffa3, #00d4ff);
+            box-shadow: 0 0 8px #00ffa3, 0 0 15px rgba(0, 212, 255, 0.5);
+        }
+        
+        /* Biofilm on grain surfaces */
+        .biofilm {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(ellipse, rgba(255, 107, 157, 0.6), rgba(196, 69, 105, 0.3));
+            filter: blur(2px);
+        }
+        
+        /* Attached microbes */
+        .microbe {
+            position: absolute;
+            background: radial-gradient(ellipse at 40% 40%, #ff7eb3, #c44569);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255, 107, 157, 0.6);
+        }
+        
+        .microbe.rod {
+            border-radius: 40%;
+        }
+        
+        /* Flagella */
+        .flagellum {
+            position: absolute;
+            width: 15px;
+            height: 2px;
+            background: linear-gradient(90deg, #ff7eb3, transparent);
+            border-radius: 1px;
+            transform-origin: left center;
+        }
+        
+        /* Equations */
+        .equation {
+            position: absolute;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 11px;
+            color: rgba(0, 212, 255, 0.25);
+            white-space: nowrap;
+        }
+        
+        /* Content */
+        .content {
+            position: absolute;
+            right: 60px;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: right;
+            z-index: 10;
+        }
+        
+        .name {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 52px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #00d4ff, #00ff88, #00d4ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 3px;
+            filter: drop-shadow(0 0 30px rgba(0, 212, 255, 0.4));
+        }
+        
+        .title {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 16px;
+            color: #5a8fa8;
+            margin-top: 12px;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+        
+        .tagline {
+            font-family: 'Source Code Pro', monospace;
+            font-size: 13px;
+            color: #3d6a80;
+            margin-top: 8px;
+            letter-spacing: 1px;
+        }
+        
+        .note {
+            margin-top: 30px;
+            color: #444;
+            font-family: 'Source Code Pro', monospace;
+            font-size: 12px;
+        }
+        
+        /* SVG for streamlines */
+        .streamlines-svg {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+        }
+        
+        /* Particle animations along paths */
+        @keyframes moveParticle1 {
+            0% { offset-distance: 0%; opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { offset-distance: 100%; opacity: 0; }
+        }
+        
+        .moving-particle {
+            width: 5px;
+            height: 5px;
+            background: radial-gradient(circle, #00ffa3, #00d4ff);
+            border-radius: 50%;
+            box-shadow: 0 0 6px #00ffa3;
+            position: absolute;
+            offset-rotate: 0deg;
+        }
+        
+        .mp1 { offset-path: path('M -20,180 Q 80,160 120,200 T 200,170 T 300,190 T 420,150 T 550,180'); animation: moveParticle1 5s linear infinite; }
+        .mp2 { offset-path: path('M -20,240 Q 60,260 100,230 T 180,260 T 280,220 T 380,250 T 500,210 T 600,240'); animation: moveParticle1 6s linear infinite; animation-delay: 1s; }
+        .mp3 { offset-path: path('M -20,300 Q 50,280 90,310 T 170,280 T 260,310 T 360,270 T 480,300'); animation: moveParticle1 5.5s linear infinite; animation-delay: 2s; }
+        .mp4 { offset-path: path('M -20,120 Q 70,100 130,140 T 230,110 T 350,140 T 480,100'); animation: moveParticle1 6.5s linear infinite; animation-delay: 0.5s; }
+        .mp5 { offset-path: path('M -20,350 Q 80,370 140,340 T 250,370 T 380,330 T 520,360'); animation: moveParticle1 5s linear infinite; animation-delay: 3s; }
+    </style>
+</head>
+<body>
+    <div class="banner">
+        <!-- SVG for smooth streamlines through pore throats -->
+        <svg class="streamlines-svg" viewBox="0 0 1280 400" preserveAspectRatio="none">
+            <defs>
+                <linearGradient id="flowGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" style="stop-color:#00d4ff; stop-opacity:0"/>
+                    <stop offset="20%" style="stop-color:#00d4ff; stop-opacity:0.8"/>
+                    <stop offset="50%" style="stop-color:#00ff88; stop-opacity:1"/>
+                    <stop offset="80%" style="stop-color:#00d4ff; stop-opacity:0.8"/>
+                    <stop offset="100%" style="stop-color:#00d4ff; stop-opacity:0"/>
+                </linearGradient>
+                <filter id="glow">
+                    <feGaussianBlur stdDeviation="2" result="coloredBlur"/>
+                    <feMerge>
+                        <feMergeNode in="coloredBlur"/>
+                        <feMergeNode in="SourceGraphic"/>
+                    </feMerge>
+                </filter>
+            </defs>
+            
+            <!-- Streamlines curving through pore throats - realistic flow paths -->
+            <!-- Upper flow channel -->
+            <path d="M -20,120 Q 70,100 130,140 Q 190,180 230,130 Q 280,80 350,140 Q 420,200 480,130 Q 540,60 620,120" 
+                  class="streamline" filter="url(#glow)" stroke-dasharray="8,4"/>
+            
+            <!-- Middle-upper flow -->
+            <path d="M -20,180 Q 80,150 120,200 Q 160,250 200,190 Q 250,130 300,190 Q 350,250 420,170 Q 490,90 550,180 Q 610,270 680,180" 
+                  class="streamline" filter="url(#glow)"/>
+            
+            <!-- Central main flow -->
+            <path d="M -20,240 Q 60,270 100,230 Q 140,190 180,250 Q 220,310 280,240 Q 340,170 380,250 Q 420,330 500,240 Q 580,150 660,250" 
+                  class="streamline" filter="url(#glow)" stroke-width="3"/>
+            
+            <!-- Middle-lower flow -->
+            <path d="M -20,300 Q 50,270 90,310 Q 130,350 170,290 Q 210,230 260,300 Q 310,370 360,290 Q 410,210 480,300 Q 550,390 620,300" 
+                  class="streamline" filter="url(#glow)"/>
+            
+            <!-- Lower flow channel -->
+            <path d="M -20,350 Q 80,380 140,340 Q 200,300 250,360 Q 300,420 380,350 Q 460,280 520,360 Q 580,440 660,350" 
+                  class="streamline" filter="url(#glow)" stroke-dasharray="8,4"/>
+        </svg>
+        
+        <!-- Packed grains - Row 1 (top) - touching arrangement -->
+        <div class="grain" style="width: 140px; height: 130px; left: -30px; top: -20px;"></div>
+        <div class="grain" style="width: 120px; height: 110px; left: 100px; top: -25px;"></div>
+        <div class="grain" style="width: 150px; height: 140px; left: 210px; top: -35px;"></div>
+        <div class="grain" style="width: 130px; height: 120px; left: 350px; top: -30px;"></div>
+        <div class="grain" style="width: 110px; height: 100px; left: 470px; top: -20px;"></div>
+        <div class="grain" style="width: 125px; height: 115px; left: 570px; top: -30px;"></div>
+        
+        <!-- Row 2 - offset for hexagonal packing -->
+        <div class="grain" style="width: 130px; height: 120px; left: -50px; top: 90px;"></div>
+        <div class="grain" style="width: 145px; height: 135px; left: 70px; top: 75px;"></div>
+        <div class="grain" style="width: 125px; height: 115px; left: 200px; top: 95px;"></div>
+        <div class="grain" style="width: 140px; height: 130px; left: 310px; top: 80px;"></div>
+        <div class="grain" style="width: 120px; height: 110px; left: 440px; top: 90px;"></div>
+        <div class="grain" style="width: 135px; height: 125px; left: 545px; top: 75px;"></div>
+        
+        <!-- Row 3 - pore spaces between rows -->
+        <div class="grain" style="width: 135px; height: 125px; left: -35px; top: 200px;"></div>
+        <div class="grain" style="width: 150px; height: 140px; left: 90px; top: 190px;"></div>
+        <div class="grain" style="width: 130px; height: 120px; left: 225px; top: 205px;"></div>
+        <div class="grain" style="width: 145px; height: 135px; left: 340px; top: 195px;"></div>
+        <div class="grain" style="width: 125px; height: 115px; left: 470px; top: 210px;"></div>
+        <div class="grain" style="width: 140px; height: 130px; left: 580px; top: 195px;"></div>
+        
+        <!-- Row 4 (bottom) -->
+        <div class="grain" style="width: 140px; height: 130px; left: -45px; top: 310px;"></div>
+        <div class="grain" style="width: 125px; height: 115px; left: 85px; top: 320px;"></div>
+        <div class="grain" style="width: 145px; height: 135px; left: 195px; top: 305px;"></div>
+        <div class="grain" style="width: 130px; height: 120px; left: 325px; top: 315px;"></div>
+        <div class="grain" style="width: 135px; height: 125px; left: 440px; top: 305px;"></div>
+        <div class="grain" style="width: 120px; height: 110px; left: 560px; top: 320px;"></div>
+        
+        <!-- Biofilm patches on grain surfaces -->
+        <div class="biofilm" style="width: 40px; height: 25px; left: 140px; top: 75px;"></div>
+        <div class="biofilm" style="width: 35px; height: 20px; left: 280px; top: 95px;"></div>
+        <div class="biofilm" style="width: 45px; height: 28px; left: 180px; top: 200px;"></div>
+        <div class="biofilm" style="width: 38px; height: 22px; left: 400px; top: 205px;"></div>
+        <div class="biofilm" style="width: 42px; height: 26px; left: 100px; top: 315px;"></div>
+        
+        <!-- Attached microbes (rod-shaped bacteria on surfaces) -->
+        <div class="microbe rod" style="width: 16px; height: 8px; left: 145px; top: 80px; transform: rotate(-20deg);"></div>
+        <div class="microbe rod" style="width: 14px; height: 7px; left: 155px; top: 88px; transform: rotate(15deg);"></div>
+        <div class="microbe rod" style="width: 15px; height: 7px; left: 285px; top: 100px; transform: rotate(-35deg);"></div>
+        <div class="microbe rod" style="width: 18px; height: 9px; left: 185px; top: 205px; transform: rotate(10deg);"></div>
+        <div class="microbe rod" style="width: 14px; height: 7px; left: 195px; top: 215px; transform: rotate(-25deg);"></div>
+        <div class="microbe rod" style="width: 16px; height: 8px; left: 405px; top: 210px; transform: rotate(30deg);"></div>
+        <div class="microbe rod" style="width: 15px; height: 7px; left: 415px; top: 220px; transform: rotate(-15deg);"></div>
+        <div class="microbe rod" style="width: 17px; height: 8px; left: 105px; top: 320px; transform: rotate(5deg);"></div>
+        
+        <!-- Swimming microbes with flagella -->
+        <div style="position: absolute; left: 250px; top: 165px; transform: rotate(25deg);">
+            <div class="microbe rod" style="width: 18px; height: 9px; position: relative;"></div>
+            <div class="flagellum" style="left: -12px; top: 3px; transform: rotate(-30deg);"></div>
+        </div>
+        <div style="position: absolute; left: 380px; top: 260px; transform: rotate(-15deg);">
+            <div class="microbe rod" style="width: 16px; height: 8px; position: relative;"></div>
+            <div class="flagellum" style="left: -10px; top: 2px; transform: rotate(20deg);"></div>
+        </div>
+        
+        <!-- Animated particles following streamlines -->
+        <div class="moving-particle mp1"></div>
+        <div class="moving-particle mp2"></div>
+        <div class="moving-particle mp3"></div>
+        <div class="moving-particle mp4"></div>
+        <div class="moving-particle mp5"></div>
+        
+        <!-- Equations -->
+        <div class="equation" style="left: 50px; top: 45px;">∂C/∂t + ∇·(uC) = D∇²C + R</div>
+        <div class="equation" style="left: 420px; top: 375px;">fᵢ(x+eᵢΔt, t+Δt) = fᵢ(x,t) - (fᵢ-fᵢᵉᑫ)/τ</div>
+        <div class="equation" style="left: 80px; top: 375px;">Pe = uL/D</div>
+        
+        <!-- Content -->
+        <div class="content">
+            <div class="name">SHAHRAM ASGARI</div>
+            <div class="title">PhD Researcher · University of Georgia</div>
+            <div class="tagline">Pore-Scale Reactive Transport · Lattice Boltzmann · Microbial Dynamics</div>
+        </div>
+    </div>
+    
+    <p class="note">Right-click → Save image as... (or screenshot at 1280×400)</p>
+</body>
+</html>
