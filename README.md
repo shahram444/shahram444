@@ -1,4 +1,4 @@
-![Header](./banner.svg)
+![Header](./banner.gif)
 
 ## Hi, I'm Shahram! 👋
 
