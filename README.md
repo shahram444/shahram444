@@ -1,6 +1,6 @@
 ![Header](./banner3d.gif)
 
-## Hi, I'm Shahram! 👋
+## Hi, I'm Shahram! 
 
 🔬 **PhD Student** at University of Georgia  
 🧪 Pore-scale reactive transport modeling  
